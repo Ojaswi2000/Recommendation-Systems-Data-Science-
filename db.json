@@ -1,0 +1,1850 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as pd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "column_names=['user_id','item_id','rating','timestamp']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df=pd.read_csv('u.data',sep='\\t',names=column_names)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>user_id</th>\n",
+       "      <th>item_id</th>\n",
+       "      <th>rating</th>\n",
+       "      <th>timestamp</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0</td>\n",
+       "      <td>50</td>\n",
+       "      <td>5</td>\n",
+       "      <td>881250949</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>0</td>\n",
+       "      <td>172</td>\n",
+       "      <td>5</td>\n",
+       "      <td>881250949</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>0</td>\n",
+       "      <td>133</td>\n",
+       "      <td>1</td>\n",
+       "      <td>881250949</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>196</td>\n",
+       "      <td>242</td>\n",
+       "      <td>3</td>\n",
+       "      <td>881250949</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>186</td>\n",
+       "      <td>302</td>\n",
+       "      <td>3</td>\n",
+       "      <td>891717742</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   user_id  item_id  rating  timestamp\n",
+       "0        0       50       5  881250949\n",
+       "1        0      172       5  881250949\n",
+       "2        0      133       1  881250949\n",
+       "3      196      242       3  881250949\n",
+       "4      186      302       3  891717742"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "movie_titles=pd.read_csv('Movie_Id_Titles')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>item_id</th>\n",
+       "      <th>title</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1</td>\n",
+       "      <td>Toy Story (1995)</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>2</td>\n",
+       "      <td>GoldenEye (1995)</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>3</td>\n",
+       "      <td>Four Rooms (1995)</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>4</td>\n",
+       "      <td>Get Shorty (1995)</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>5</td>\n",
+       "      <td>Copycat (1995)</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   item_id              title\n",
+       "0        1   Toy Story (1995)\n",
+       "1        2   GoldenEye (1995)\n",
+       "2        3  Four Rooms (1995)\n",
+       "3        4  Get Shorty (1995)\n",
+       "4        5     Copycat (1995)"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "movie_titles.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df=pd.merge(df,movie_titles,on='item_id')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>user_id</th>\n",
+       "      <th>item_id</th>\n",
+       "      <th>rating</th>\n",
+       "      <th>timestamp</th>\n",
+       "      <th>title</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0</td>\n",
+       "      <td>50</td>\n",
+       "      <td>5</td>\n",
+       "      <td>881250949</td>\n",
+       "      <td>Star Wars (1977)</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>290</td>\n",
+       "      <td>50</td>\n",
+       "      <td>5</td>\n",
+       "      <td>880473582</td>\n",
+       "      <td>Star Wars (1977)</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>79</td>\n",
+       "      <td>50</td>\n",
+       "      <td>4</td>\n",
+       "      <td>891271545</td>\n",
+       "      <td>Star Wars (1977)</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>2</td>\n",
+       "      <td>50</td>\n",
+       "      <td>5</td>\n",
+       "      <td>888552084</td>\n",
+       "      <td>Star Wars (1977)</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>8</td>\n",
+       "      <td>50</td>\n",
+       "      <td>5</td>\n",
+       "      <td>879362124</td>\n",
+       "      <td>Star Wars (1977)</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   user_id  item_id  rating  timestamp             title\n",
+       "0        0       50       5  881250949  Star Wars (1977)\n",
+       "1      290       50       5  880473582  Star Wars (1977)\n",
+       "2       79       50       4  891271545  Star Wars (1977)\n",
+       "3        2       50       5  888552084  Star Wars (1977)\n",
+       "4        8       50       5  879362124  Star Wars (1977)"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import matplotlib.pyplot as plt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import seaborn as sns"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sns.set_style('white')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "title\n",
+       "Marlene Dietrich: Shadow and Light (1996)     5.0\n",
+       "Prefontaine (1997)                            5.0\n",
+       "Santa with Muscles (1996)                     5.0\n",
+       "Star Kid (1997)                               5.0\n",
+       "Someone Else's America (1995)                 5.0\n",
+       "Name: rating, dtype: float64"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.groupby('title')['rating'].mean().sort_values(ascending=False).head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "title\n",
+       "Star Wars (1977)             584\n",
+       "Contact (1997)               509\n",
+       "Fargo (1996)                 508\n",
+       "Return of the Jedi (1983)    507\n",
+       "Liar Liar (1997)             485\n",
+       "Name: rating, dtype: int64"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.groupby('title')['rating'].count().sort_values(ascending=False).head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ratings=pd.DataFrame(df.groupby('title')['rating'].mean())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>rating</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>title</th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>'Til There Was You (1997)</th>\n",
+       "      <td>2.333333</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1-900 (1994)</th>\n",
+       "      <td>2.600000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>101 Dalmatians (1996)</th>\n",
+       "      <td>2.908257</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12 Angry Men (1957)</th>\n",
+       "      <td>4.344000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>187 (1997)</th>\n",
+       "      <td>3.024390</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                             rating\n",
+       "title                              \n",
+       "'Til There Was You (1997)  2.333333\n",
+       "1-900 (1994)               2.600000\n",
+       "101 Dalmatians (1996)      2.908257\n",
+       "12 Angry Men (1957)        4.344000\n",
+       "187 (1997)                 3.024390"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ratings.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "ratings['number of ratings']=pd.DataFrame(df.groupby('title')['rating'].count())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>rating</th>\n",
+       "      <th>number of ratings</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>title</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>'Til There Was You (1997)</th>\n",
+       "      <td>2.333333</td>\n",
+       "      <td>9</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1-900 (1994)</th>\n",
+       "      <td>2.600000</td>\n",
+       "      <td>5</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>101 Dalmatians (1996)</th>\n",
+       "      <td>2.908257</td>\n",
+       "      <td>109</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12 Angry Men (1957)</th>\n",
+       "      <td>4.344000</td>\n",
+       "      <td>125</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>187 (1997)</th>\n",
+       "      <td>3.024390</td>\n",
+       "      <td>41</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                             rating  number of ratings\n",
+       "title                                                 \n",
+       "'Til There Was You (1997)  2.333333                  9\n",
+       "1-900 (1994)               2.600000                  5\n",
+       "101 Dalmatians (1996)      2.908257                109\n",
+       "12 Angry Men (1957)        4.344000                125\n",
+       "187 (1997)                 3.024390                 41"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ratings.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.axes._subplots.AxesSubplot at 0x21c6a4bf308>"
+      ]
+     },
+     "execution_count": 29,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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JPUxzMHT3wL/uMxD25d57n5g/6qrkiSNzAuUJKkYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJakYg12SijHYJamYDf0ejIiNwD3AVuBc4GPAz4ADwALwKLAnM09FxK3ALuAEsDczH167siVJKxm0x/4O4FhmXg1cB3wGuB3Y14xNAbsj4nJgO7ANuB64Y+1KliT1MyjYvwrcsmT9BHAF8ECzfgi4BrgKOJyZC5n5FLAhIi4ad7GSpMH6TsVk5m8AImIzcBDYB9yWmQvNU44DFwIXAMeWvHRx/Gi/7c/Pz9PpdEYqfHZ29gVjo25rEszNzbW6/l72M9mq9QP1elpNP32DHSAiXg58DfhsZn4lIv5lycObgWeAZ5vl3vG+ZmZmlg3oUY1zW2dap9Npdf297GeyVesH6vW0mn76TsVExEuBw8CHMvOeZviRiNjRLF8HHAEeBHZGxHREbAGmM/PpkSqSJK3KoD32DwMvBm6JiMW59vcDn46IGaADHMzMkxFxBHiI7ofFnrUqWJLU36A59vfTDfJe25d57n5g/1iqkiSNzAuUJKkYg12SijHYJakYg12SijHYJakYg12SijHYJamYMsE+99zJocYkqbqB94ppi00bz2HrTd983tiTH9+1TtVI0vops8cuSeoy2CWpGINdkoox2CWpGINdkoox2CWpGINdkoox2CWpGINdkoox2CWpGINdkoox2CWpGINdkoox2CWpGINdkoox2CWpGINdkoopHey9X43nV+VJOhuU+Wq85fR+XZ5flSfpbFB6j12SzkYGuyQVY7BLUjEGuyQVM9TB04jYBnwiM3dExKuAA8AC8CiwJzNPRcStwC7gBLA3Mx9eo5olSX0M3GOPiA8CdwObmqHbgX2ZeTUwBeyOiMuB7cA24HrgjrUpV5I0yDBTMY8Db1uyfgXwQLN8CLgGuAo4nJkLmfkUsCEiLhprpWPgee2SzgYDp2Iy896I2LpkaCozF5rl48CFwAXAsSXPWRw/2m/b8/PzdDqd0yp40ezs7Gm/Zrnz2kf9/eM2Nzc3MbWMg/1Mtmr9QL2eVtPP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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "ratings['number of ratings'].hist(bins=70)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.axes._subplots.AxesSubplot at 0x21c6a5cea48>"
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "ratings['rating'].hist(bins=70)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<seaborn.axisgrid.JointGrid at 0x21c6a6f6848>"
+      ]
+     },
+     "execution_count": 32,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x432 with 3 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "sns.jointplot(x='rating',y='number of ratings',data=ratings,alpha=0.5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "moviemat=df.pivot_table(index='user_id',columns='title',values='rating')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th>title</th>\n",
+       "      <th>'Til There Was You (1997)</th>\n",
+       "      <th>1-900 (1994)</th>\n",
+       "      <th>101 Dalmatians (1996)</th>\n",
+       "      <th>12 Angry Men (1957)</th>\n",
+       "      <th>187 (1997)</th>\n",
+       "      <th>2 Days in the Valley (1996)</th>\n",
+       "      <th>20,000 Leagues Under the Sea (1954)</th>\n",
+       "      <th>2001: A Space Odyssey (1968)</th>\n",
+       "      <th>3 Ninjas: High Noon At Mega Mountain (1998)</th>\n",
+       "      <th>39 Steps, The (1935)</th>\n",
+       "      <th>...</th>\n",
+       "      <th>Yankee Zulu (1994)</th>\n",
+       "      <th>Year of the Horse (1997)</th>\n",
+       "      <th>You So Crazy (1994)</th>\n",
+       "      <th>Young Frankenstein (1974)</th>\n",
+       "      <th>Young Guns (1988)</th>\n",
+       "      <th>Young Guns II (1990)</th>\n",
+       "      <th>Young Poisoner's Handbook, The (1995)</th>\n",
+       "      <th>Zeus and Roxanne (1997)</th>\n",
+       "      <th>unknown</th>\n",
+       "      <th>Á köldum klaka (Cold Fever) (1994)</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>user_id</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>...</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5 rows × 1664 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "title    'Til There Was You (1997)  1-900 (1994)  101 Dalmatians (1996)  \\\n",
+       "user_id                                                                   \n",
+       "0                              NaN           NaN                    NaN   \n",
+       "1                              NaN           NaN                    2.0   \n",
+       "2                              NaN           NaN                    NaN   \n",
+       "3                              NaN           NaN                    NaN   \n",
+       "4                              NaN           NaN                    NaN   \n",
+       "\n",
+       "title    12 Angry Men (1957)  187 (1997)  2 Days in the Valley (1996)  \\\n",
+       "user_id                                                                 \n",
+       "0                        NaN         NaN                          NaN   \n",
+       "1                        5.0         NaN                          NaN   \n",
+       "2                        NaN         NaN                          NaN   \n",
+       "3                        NaN         2.0                          NaN   \n",
+       "4                        NaN         NaN                          NaN   \n",
+       "\n",
+       "title    20,000 Leagues Under the Sea (1954)  2001: A Space Odyssey (1968)  \\\n",
+       "user_id                                                                      \n",
+       "0                                        NaN                           NaN   \n",
+       "1                                        3.0                           4.0   \n",
+       "2                                        NaN                           NaN   \n",
+       "3                                        NaN                           NaN   \n",
+       "4                                        NaN                           NaN   \n",
+       "\n",
+       "title    3 Ninjas: High Noon At Mega Mountain (1998)  39 Steps, The (1935)  \\\n",
+       "user_id                                                                      \n",
+       "0                                                NaN                   NaN   \n",
+       "1                                                NaN                   NaN   \n",
+       "2                                                1.0                   NaN   \n",
+       "3                                                NaN                   NaN   \n",
+       "4                                                NaN                   NaN   \n",
+       "\n",
+       "title    ...  Yankee Zulu (1994)  Year of the Horse (1997)  \\\n",
+       "user_id  ...                                                 \n",
+       "0        ...                 NaN                       NaN   \n",
+       "1        ...                 NaN                       NaN   \n",
+       "2        ...                 NaN                       NaN   \n",
+       "3        ...                 NaN                       NaN   \n",
+       "4        ...                 NaN                       NaN   \n",
+       "\n",
+       "title    You So Crazy (1994)  Young Frankenstein (1974)  Young Guns (1988)  \\\n",
+       "user_id                                                                      \n",
+       "0                        NaN                        NaN                NaN   \n",
+       "1                        NaN                        5.0                3.0   \n",
+       "2                        NaN                        NaN                NaN   \n",
+       "3                        NaN                        NaN                NaN   \n",
+       "4                        NaN                        NaN                NaN   \n",
+       "\n",
+       "title    Young Guns II (1990)  Young Poisoner's Handbook, The (1995)  \\\n",
+       "user_id                                                                \n",
+       "0                         NaN                                    NaN   \n",
+       "1                         NaN                                    NaN   \n",
+       "2                         NaN                                    NaN   \n",
+       "3                         NaN                                    NaN   \n",
+       "4                         NaN                                    NaN   \n",
+       "\n",
+       "title    Zeus and Roxanne (1997)  unknown  Á köldum klaka (Cold Fever) (1994)  \n",
+       "user_id                                                                        \n",
+       "0                            NaN      NaN                                 NaN  \n",
+       "1                            NaN      4.0                                 NaN  \n",
+       "2                            NaN      NaN                                 NaN  \n",
+       "3                            NaN      NaN                                 NaN  \n",
+       "4                            NaN      NaN                                 NaN  \n",
+       "\n",
+       "[5 rows x 1664 columns]"
+      ]
+     },
+     "execution_count": 34,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "moviemat.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>rating</th>\n",
+       "      <th>number of ratings</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>title</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>Star Wars (1977)</th>\n",
+       "      <td>4.359589</td>\n",
+       "      <td>584</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Contact (1997)</th>\n",
+       "      <td>3.803536</td>\n",
+       "      <td>509</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Fargo (1996)</th>\n",
+       "      <td>4.155512</td>\n",
+       "      <td>508</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Return of the Jedi (1983)</th>\n",
+       "      <td>4.007890</td>\n",
+       "      <td>507</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Liar Liar (1997)</th>\n",
+       "      <td>3.156701</td>\n",
+       "      <td>485</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>English Patient, The (1996)</th>\n",
+       "      <td>3.656965</td>\n",
+       "      <td>481</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Scream (1996)</th>\n",
+       "      <td>3.441423</td>\n",
+       "      <td>478</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Toy Story (1995)</th>\n",
+       "      <td>3.878319</td>\n",
+       "      <td>452</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Air Force One (1997)</th>\n",
+       "      <td>3.631090</td>\n",
+       "      <td>431</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Independence Day (ID4) (1996)</th>\n",
+       "      <td>3.438228</td>\n",
+       "      <td>429</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                 rating  number of ratings\n",
+       "title                                                     \n",
+       "Star Wars (1977)               4.359589                584\n",
+       "Contact (1997)                 3.803536                509\n",
+       "Fargo (1996)                   4.155512                508\n",
+       "Return of the Jedi (1983)      4.007890                507\n",
+       "Liar Liar (1997)               3.156701                485\n",
+       "English Patient, The (1996)    3.656965                481\n",
+       "Scream (1996)                  3.441423                478\n",
+       "Toy Story (1995)               3.878319                452\n",
+       "Air Force One (1997)           3.631090                431\n",
+       "Independence Day (ID4) (1996)  3.438228                429"
+      ]
+     },
+     "execution_count": 35,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ratings.sort_values('number of ratings',ascending=False).head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "starwars_user_ratings=moviemat['Star Wars (1977)']\n",
+    "liarliar_user_ratings=moviemat['Liar Liar (1997)']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "user_id\n",
+       "0    5.0\n",
+       "1    5.0\n",
+       "2    5.0\n",
+       "3    NaN\n",
+       "4    5.0\n",
+       "5    4.0\n",
+       "6    4.0\n",
+       "7    5.0\n",
+       "8    5.0\n",
+       "9    5.0\n",
+       "Name: Star Wars (1977), dtype: float64"
+      ]
+     },
+     "execution_count": 37,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "starwars_user_ratings.head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "similar_to_starwars=moviemat.corrwith(starwars_user_ratings)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\hp\\anaconda3\\lib\\site-packages\\numpy\\lib\\function_base.py:2526: RuntimeWarning: Degrees of freedom <= 0 for slice\n",
+      "  c = cov(x, y, rowvar)\n",
+      "C:\\Users\\hp\\anaconda3\\lib\\site-packages\\numpy\\lib\\function_base.py:2455: RuntimeWarning: divide by zero encountered in true_divide\n",
+      "  c *= np.true_divide(1, fact)\n"
+     ]
+    }
+   ],
+   "source": [
+    "similar_to_liarliar=moviemat.corrwith(liarliar_user_ratings)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "corr_starwars=pd.DataFrame(similar_to_starwars,columns=['Correlation'])\n",
+    "corr_starwars.dropna(inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Correlation</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>title</th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>'Til There Was You (1997)</th>\n",
+       "      <td>0.872872</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1-900 (1994)</th>\n",
+       "      <td>-0.645497</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>101 Dalmatians (1996)</th>\n",
+       "      <td>0.211132</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12 Angry Men (1957)</th>\n",
+       "      <td>0.184289</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>187 (1997)</th>\n",
+       "      <td>0.027398</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                           Correlation\n",
+       "title                                 \n",
+       "'Til There Was You (1997)     0.872872\n",
+       "1-900 (1994)                 -0.645497\n",
+       "101 Dalmatians (1996)         0.211132\n",
+       "12 Angry Men (1957)           0.184289\n",
+       "187 (1997)                    0.027398"
+      ]
+     },
+     "execution_count": 43,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "corr_starwars.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Correlation</th>\n",
+       "      <th>number of ratings</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>title</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>Commandments (1997)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Cosi (1996)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>4</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>No Escape (1994)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>5</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Stripes (1981)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>5</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Man of the Year (1995)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>9</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Hollow Reed (1996)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>6</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Beans of Egypt, Maine, The (1994)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Good Man in Africa, A (1994)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Old Lady Who Walked in the Sea, The (Vieille qui marchait dans la mer, La) (1991)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>5</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Outlaw, The (1943)</th>\n",
+       "      <td>1.0</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                                    Correlation  \\\n",
+       "title                                                             \n",
+       "Commandments (1997)                                         1.0   \n",
+       "Cosi (1996)                                                 1.0   \n",
+       "No Escape (1994)                                            1.0   \n",
+       "Stripes (1981)                                              1.0   \n",
+       "Man of the Year (1995)                                      1.0   \n",
+       "Hollow Reed (1996)                                          1.0   \n",
+       "Beans of Egypt, Maine, The (1994)                           1.0   \n",
+       "Good Man in Africa, A (1994)                                1.0   \n",
+       "Old Lady Who Walked in the Sea, The (Vieille qu...          1.0   \n",
+       "Outlaw, The (1943)                                          1.0   \n",
+       "\n",
+       "                                                    number of ratings  \n",
+       "title                                                                  \n",
+       "Commandments (1997)                                                 3  \n",
+       "Cosi (1996)                                                         4  \n",
+       "No Escape (1994)                                                    5  \n",
+       "Stripes (1981)                                                      5  \n",
+       "Man of the Year (1995)                                              9  \n",
+       "Hollow Reed (1996)                                                  6  \n",
+       "Beans of Egypt, Maine, The (1994)                                   2  \n",
+       "Good Man in Africa, A (1994)                                        2  \n",
+       "Old Lady Who Walked in the Sea, The (Vieille qu...                  5  \n",
+       "Outlaw, The (1943)                                                  2  "
+      ]
+     },
+     "execution_count": 47,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "corr_starwars.sort_values('Correlation',ascending=False).head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 51,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Correlation</th>\n",
+       "      <th>number of ratings</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>title</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>Star Wars (1977)</th>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>584</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Empire Strikes Back, The (1980)</th>\n",
+       "      <td>0.748353</td>\n",
+       "      <td>368</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Return of the Jedi (1983)</th>\n",
+       "      <td>0.672556</td>\n",
+       "      <td>507</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Raiders of the Lost Ark (1981)</th>\n",
+       "      <td>0.536117</td>\n",
+       "      <td>420</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Austin Powers: International Man of Mystery (1997)</th>\n",
+       "      <td>0.377433</td>\n",
+       "      <td>130</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Sting, The (1973)</th>\n",
+       "      <td>0.367538</td>\n",
+       "      <td>241</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Indiana Jones and the Last Crusade (1989)</th>\n",
+       "      <td>0.350107</td>\n",
+       "      <td>331</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Pinocchio (1940)</th>\n",
+       "      <td>0.347868</td>\n",
+       "      <td>101</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Frighteners, The (1996)</th>\n",
+       "      <td>0.332729</td>\n",
+       "      <td>115</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>L.A. Confidential (1997)</th>\n",
+       "      <td>0.319065</td>\n",
+       "      <td>297</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                                    Correlation  \\\n",
+       "title                                                             \n",
+       "Star Wars (1977)                                       1.000000   \n",
+       "Empire Strikes Back, The (1980)                        0.748353   \n",
+       "Return of the Jedi (1983)                              0.672556   \n",
+       "Raiders of the Lost Ark (1981)                         0.536117   \n",
+       "Austin Powers: International Man of Mystery (1997)     0.377433   \n",
+       "Sting, The (1973)                                      0.367538   \n",
+       "Indiana Jones and the Last Crusade (1989)              0.350107   \n",
+       "Pinocchio (1940)                                       0.347868   \n",
+       "Frighteners, The (1996)                                0.332729   \n",
+       "L.A. Confidential (1997)                               0.319065   \n",
+       "\n",
+       "                                                    number of ratings  \n",
+       "title                                                                  \n",
+       "Star Wars (1977)                                                  584  \n",
+       "Empire Strikes Back, The (1980)                                   368  \n",
+       "Return of the Jedi (1983)                                         507  \n",
+       "Raiders of the Lost Ark (1981)                                    420  \n",
+       "Austin Powers: International Man of Mystery (1997)                130  \n",
+       "Sting, The (1973)                                                 241  \n",
+       "Indiana Jones and the Last Crusade (1989)                         331  \n",
+       "Pinocchio (1940)                                                  101  \n",
+       "Frighteners, The (1996)                                           115  \n",
+       "L.A. Confidential (1997)                                          297  "
+      ]
+     },
+     "execution_count": 51,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "corr_starwars[corr_starwars['number of ratings']>100].sort_values('Correlation',ascending=False).head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 52,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "corr_liarliar=pd.DataFrame(similar_to_liarliar,columns=['Correlation'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "corr_liarliar.dropna(inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 56,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Correlation</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>title</th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>'Til There Was You (1997)</th>\n",
+       "      <td>0.118913</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>101 Dalmatians (1996)</th>\n",
+       "      <td>0.469765</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12 Angry Men (1957)</th>\n",
+       "      <td>0.066272</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>187 (1997)</th>\n",
+       "      <td>0.175145</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2 Days in the Valley (1996)</th>\n",
+       "      <td>0.040739</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>20,000 Leagues Under the Sea (1954)</th>\n",
+       "      <td>-0.027932</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2001: A Space Odyssey (1968)</th>\n",
+       "      <td>-0.057864</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>39 Steps, The (1935)</th>\n",
+       "      <td>0.400918</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8 1/2 (1963)</th>\n",
+       "      <td>0.178064</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>A Chef in Love (1996)</th>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                     Correlation\n",
+       "title                                           \n",
+       "'Til There Was You (1997)               0.118913\n",
+       "101 Dalmatians (1996)                   0.469765\n",
+       "12 Angry Men (1957)                     0.066272\n",
+       "187 (1997)                              0.175145\n",
+       "2 Days in the Valley (1996)             0.040739\n",
+       "20,000 Leagues Under the Sea (1954)    -0.027932\n",
+       "2001: A Space Odyssey (1968)           -0.057864\n",
+       "39 Steps, The (1935)                    0.400918\n",
+       "8 1/2 (1963)                            0.178064\n",
+       "A Chef in Love (1996)                   0.000000"
+      ]
+     },
+     "execution_count": 56,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "corr_liarliar.head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 57,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "corr_liarliar =corr_liarliar.join(ratings['number of ratings'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Correlation</th>\n",
+       "      <th>number of ratings</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>title</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>'Til There Was You (1997)</th>\n",
+       "      <td>0.118913</td>\n",
+       "      <td>9</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>101 Dalmatians (1996)</th>\n",
+       "      <td>0.469765</td>\n",
+       "      <td>109</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12 Angry Men (1957)</th>\n",
+       "      <td>0.066272</td>\n",
+       "      <td>125</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>187 (1997)</th>\n",
+       "      <td>0.175145</td>\n",
+       "      <td>41</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2 Days in the Valley (1996)</th>\n",
+       "      <td>0.040739</td>\n",
+       "      <td>93</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                             Correlation  number of ratings\n",
+       "title                                                      \n",
+       "'Til There Was You (1997)       0.118913                  9\n",
+       "101 Dalmatians (1996)           0.469765                109\n",
+       "12 Angry Men (1957)             0.066272                125\n",
+       "187 (1997)                      0.175145                 41\n",
+       "2 Days in the Valley (1996)     0.040739                 93"
+      ]
+     },
+     "execution_count": 58,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "corr_liarliar.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Correlation</th>\n",
+       "      <th>number of ratings</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>title</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>Liar Liar (1997)</th>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>485</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Batman Forever (1995)</th>\n",
+       "      <td>0.516968</td>\n",
+       "      <td>114</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Mask, The (1994)</th>\n",
+       "      <td>0.484650</td>\n",
+       "      <td>129</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Down Periscope (1996)</th>\n",
+       "      <td>0.472681</td>\n",
+       "      <td>101</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Con Air (1997)</th>\n",
+       "      <td>0.469828</td>\n",
+       "      <td>137</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Pretty Woman (1990)</th>\n",
+       "      <td>0.469790</td>\n",
+       "      <td>164</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>101 Dalmatians (1996)</th>\n",
+       "      <td>0.469765</td>\n",
+       "      <td>109</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Michael (1996)</th>\n",
+       "      <td>0.442022</td>\n",
+       "      <td>119</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Waterworld (1995)</th>\n",
+       "      <td>0.438405</td>\n",
+       "      <td>102</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>Indiana Jones and the Last Crusade (1989)</th>\n",
+       "      <td>0.414427</td>\n",
+       "      <td>331</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                           Correlation  number of ratings\n",
+       "title                                                                    \n",
+       "Liar Liar (1997)                              1.000000                485\n",
+       "Batman Forever (1995)                         0.516968                114\n",
+       "Mask, The (1994)                              0.484650                129\n",
+       "Down Periscope (1996)                         0.472681                101\n",
+       "Con Air (1997)                                0.469828                137\n",
+       "Pretty Woman (1990)                           0.469790                164\n",
+       "101 Dalmatians (1996)                         0.469765                109\n",
+       "Michael (1996)                                0.442022                119\n",
+       "Waterworld (1995)                             0.438405                102\n",
+       "Indiana Jones and the Last Crusade (1989)     0.414427                331"
+      ]
+     },
+     "execution_count": 59,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "corr_liarliar[corr_liarliar['number of ratings']>100].sort_values('Correlation',ascending=False).head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
