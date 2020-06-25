@@ -3,3 +3,5 @@ This project builds a simple recommendation system for movies using data science
 
 # The Corrwith Function
 This project uses the simplest technique for recommending movies to the users using the correlation function corrwith(). This function builds a correlation for the movies: 'Star Wars' and 'Liar Liar' and uses the concept of collaborative filtering for recommendation.
+
+The dataset for movies is present in 'Movies_Id_Titles' file and the dataset for user_ids and ratings for the movies is present in 'u.data' file.
